@@ -28,8 +28,8 @@ set IOFW "/etc/extras/px4_io-v2_default.bin"
 set IO_PRESENT no
 set LOGGER_ARGS ""
 set LOGGER_BUF 8
-set MIXER none
-set MIXER_AUX none
+set MIXER pass
+set MIXER_AUX pass
 set MIXER_FILE none
 set MIXER_EXTRA none
 set OUTPUT_MODE none
@@ -48,7 +48,7 @@ set SDCARD_FORMAT no
 set SDCARD_MIXERS_PATH /fs/microsd/etc/mixers
 set STARTUP_TUNE 1
 set USE_IO no
-set VEHICLE_TYPE none
+set VEHICLE_TYPE uuv
 
 #
 # Print full system version.

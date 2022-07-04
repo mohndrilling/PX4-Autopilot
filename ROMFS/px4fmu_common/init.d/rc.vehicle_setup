@@ -103,7 +103,7 @@ then
 	# Load mixer and configure outputs.
 	. ${R}etc/init.d/rc.interface
 
-	# Start standard vtol apps.
+	# Start standard uuv apps.
 	. ${R}etc/init.d/rc.uuv_apps
 fi
 

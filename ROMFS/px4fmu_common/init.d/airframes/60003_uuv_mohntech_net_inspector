@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# @name Mohn Technology net_inspector
+#
+# @type Underwater Robot
+# @class Underwater Robot
+#
+# @maintainer
+#
+# @board px4_fmu-v3 exclude
+#
+
+. ${R}etc/init.d/rc.uuv_mohntech_net_inspector
+
+# disable circuit breaker for airspeed sensor
+param set-default CBRK_AIRSPD_CHK 162128
+
+set MIXER pass
