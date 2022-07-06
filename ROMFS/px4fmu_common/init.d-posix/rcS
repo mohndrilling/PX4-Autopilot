@@ -38,6 +38,13 @@ set LOGGER_BUF                  1000
 
 set RUN_MINIMAL_SHELL           no
 
+# disable RC requirement to arm
+set COM_RC_IN_MODE 1
+
+# disable auto disarm by default
+set COM_DISARM_LAND -1
+set COM_DISARM_PRFLT -1
+
 # Use the variable set by sitl_run.sh to choose the model settings.
 if [ "$PX4_SIM_MODEL" = "shell" ]; then
 	set RUN_MINIMAL_SHELL yes

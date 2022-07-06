@@ -50,6 +50,13 @@ set STARTUP_TUNE 1
 set USE_IO no
 set VEHICLE_TYPE uuv
 
+# disable RC requirement to arm
+set COM_RC_IN_MODE 1
+
+# disable auto disarm by default
+set COM_DISARM_LAND -1
+set COM_DISARM_PRFLT -1
+
 #
 # Print full system version.
 #
