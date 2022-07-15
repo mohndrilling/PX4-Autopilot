@@ -59,9 +59,29 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
 	report_failures = (report_failures && !status_flags.calibration_enabled);
 
 	bool failed = false;
+	bool debug_mode = false;
 
-	failed = failed || !airframeCheck(mavlink_log_pub, status);
-	failed = failed || !sdcardCheck(mavlink_log_pub, status_flags.sd_card_detected_once, report_failures);
+    /* ---- AIRFRAME ---- */
+    {
+        bool airframeCheck_failed = !airframeCheck(mavlink_log_pub, status);
+        if (airframeCheck_failed && debug_mode) {
+            PX4_INFO("airframe check failed");
+        } else {
+            // PX4_INFO("airframe check succeeded");
+        }
+        failed |= airframeCheck_failed;
+    }
+
+    /* ---- SD CARD ---- */
+    {
+        bool sdcardCheck_failed = !airframeCheck(mavlink_log_pub, status);
+        if (sdcardCheck_failed && debug_mode) {
+            PX4_INFO("sdcard check failed");
+        } else {
+            // PX4_INFO("sdcard check succeeded");
+        }
+        failed |= sdcardCheck_failed;
+    }
 
 	/* ---- MAG ---- */
 	{
@@ -69,30 +89,48 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
 		param_get(param_find("SYS_HAS_MAG"), &sys_has_mag);
 
 		if (sys_has_mag == 1) {
-			failed |= !sensorAvailabilityCheck(report_failures, max_mandatory_mag_count,
+		    bool mag_available = sensorAvailabilityCheck(report_failures, max_mandatory_mag_count,
 							   mavlink_log_pub, status, magnetometerCheck);
+	        if (!mag_available && debug_mode) {
+	            PX4_INFO("magnetometer isn't available");
+	        } else {
+	            // PX4_INFO("magnetometer is available");
+	        }
+			failed |= !mag_available;
 
 			/* mag consistency checks (need to be performed after the individual checks) */
-			if (!magConsistencyCheck(mavlink_log_pub, status, report_failures)) {
-				failed = true;
-			}
+			bool mag_consistent = magConsistencyCheck(mavlink_log_pub, status, report_failures);
+			if (!mag_consistent && debug_mode) {
+	            PX4_INFO("magnetometer isn't consistent");
+	        } else {
+	            // PX4_INFO("magnetometer is consistent");
+	        }
+			failed |= !mag_consistent;
 		}
 	}
 
 	/* ---- ACCEL ---- */
 	{
-		failed |= !sensorAvailabilityCheck(report_failures, max_mandatory_accel_count,
+	    bool accel_available = sensorAvailabilityCheck(report_failures, max_mandatory_accel_count,
 						   mavlink_log_pub, status, accelerometerCheck);
-
-		// TODO: highest priority (from params)
+	    if (!accel_available && debug_mode) {
+	        PX4_INFO("accelerometer isn't available");
+	    } else {
+	        // PX4_INFO("accelerometer is available");
+	    }
+		failed |= !accel_available;
 	}
 
 	/* ---- GYRO ---- */
 	{
-		failed |= !sensorAvailabilityCheck(report_failures, max_mandatory_gyro_count,
+	    bool gyro_available = sensorAvailabilityCheck(report_failures, max_mandatory_gyro_count,
 						   mavlink_log_pub, status, gyroCheck);
-
-		// TODO: highest priority (from params)
+		if (!gyro_available && debug_mode) {
+	        PX4_INFO("gyroscope isn't available");
+	    } else {
+	        // PX4_INFO("gyroscope is available");
+	    }
+		failed |= !gyro_available;
 	}
 
 	/* ---- BARO ---- */
@@ -101,17 +139,27 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
 		param_get(param_find("SYS_HAS_BARO"), &sys_has_baro);
 
 		if (sys_has_baro == 1) {
-			static_cast<void>(sensorAvailabilityCheck(report_failures, max_mandatory_baro_count,
-					  mavlink_log_pub, status, baroCheck));
+			bool baro_available = sensorAvailabilityCheck(report_failures, max_mandatory_baro_count,
+					  mavlink_log_pub, status, baroCheck);
+		    if (!baro_available && debug_mode) {
+	            PX4_INFO("barometer isn't available");
+            } else {
+                // PX4_INFO("barometer is available");
+            }
+            failed |= !baro_available;
 		}
 	}
 
 	/* ---- IMU CONSISTENCY ---- */
 	// To be performed after the individual sensor checks have completed
 	{
-		if (!imuConsistencyCheck(mavlink_log_pub, status, report_failures)) {
-			failed = true;
-		}
+	    bool imu_consistent = imuConsistencyCheck(mavlink_log_pub, status, report_failures);
+        if (!imu_consistent && debug_mode) {
+            PX4_INFO("imu isn't consistent");
+        } else {
+            // PX4_INFO("imu is consistent");
+        }
+        failed |= !imu_consistent;
 	}
 
 	/* ---- Distance Sensor ---- */
@@ -120,10 +168,15 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
 		param_get(param_find("SYS_HAS_NUM_DIST"), &sys_has_num_dist_sens);
 
 		if (sys_has_num_dist_sens > 0) {
-			static_cast<void>(sensorAvailabilityCheck(report_failures, sys_has_num_dist_sens,
-					  mavlink_log_pub, status, distSensCheck));
+			bool dist_available = sensorAvailabilityCheck(report_failures, sys_has_num_dist_sens,
+					  mavlink_log_pub, status, distSensCheck);
+		    if (!dist_available && debug_mode) {
+                PX4_INFO("distance sensor isn't available");
+            } else {
+                // PX4_INFO("distance sensor is available");
+            }
+            failed |= !dist_available;
 		}
-
 	}
 
 	/* ---- AIRSPEED ---- */
@@ -146,7 +199,8 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
 		if (!airspeedCheck(mavlink_log_pub, status, optional, report_failures, is_arm_attempt, (bool)max_airspeed_check_en,
 				   arming_max_airspeed_allowed)
 		    && !(bool)optional) {
-			failed = true;
+		    PX4_INFO("airspeed check failed");
+			failed |= true;
 		}
 	}
 
@@ -160,6 +214,7 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
 				mavlink_log_critical(mavlink_log_pub, "RC calibration check failed");
 			}
 
+            PX4_INFO("RC calibration check failed");
 			failed = true;
 
 			set_health_flags(subsystem_info_s::SUBSYSTEM_TYPE_RCRECEIVER, status_flags.rc_signal_found_once, true, false, status);
@@ -176,6 +231,7 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
 	/* ---- SYSTEM POWER ---- */
 	if (status_flags.power_input_valid && !status_flags.circuit_breaker_engaged_power_check) {
 		if (!powerCheck(mavlink_log_pub, status, report_failures)) {
+		    PX4_INFO("system power check failed");
 			failed = true;
 		}
 	}
@@ -215,22 +271,78 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
 		    || control_mode.flag_control_velocity_enabled
 		    || control_mode.flag_control_position_enabled) {
 			// healthy estimator only required for dependent control modes
+			if (!ekf_healthy && debug_mode) {
+			    PX4_INFO("ekf health check failed");
+			}
 			failed |= !ekf_healthy;
 		}
 	}
 
 	/* ---- Failure Detector ---- */
 	if (!failureDetectorCheck(mavlink_log_pub, status, report_failures)) {
+	    PX4_INFO("failure detected");
 		failed = true;
 	}
 
-	failed = failed || !manualControlCheck(mavlink_log_pub, report_failures);
-	failed = failed || !modeCheck(mavlink_log_pub, report_failures, status);
-	failed = failed || !cpuResourceCheck(mavlink_log_pub, report_failures);
-	failed = failed || !parachuteCheck(mavlink_log_pub, report_failures, status_flags);
-	failed = failed || !preArmCheck(mavlink_log_pub, status_flags, control_mode,
-					safety_button_available, safety_off, status, report_failures, is_arm_attempt);
+    /* ---- Manual Control ---- */
+	{
+	    bool manual_control_check_failed = !manualControlCheck(mavlink_log_pub, report_failures);
+        if (manual_control_check_failed) {
+            PX4_INFO("manual control check failed");
+        } else {
+            // PX4_INFO("manual control check succeeded");
+        }
+        failed |= manual_control_check_failed;
+	}
 
+	/* ---- Mode ---- */
+	{
+	    bool mode_check_failed = !modeCheck(mavlink_log_pub, report_failures, status);
+        if (mode_check_failed) {
+            PX4_INFO("mode check failed");
+        } else {
+            // PX4_INFO("mode check succeeded");
+        }
+        failed |= mode_check_failed;
+	}
+
+	/* ---- CPU resource ---- */
+	{
+	    bool cpu_resource_check_failed = !cpuResourceCheck(mavlink_log_pub, report_failures);
+        if (cpu_resource_check_failed) {
+            PX4_INFO("cpu resource check failed");
+        } else {
+            // PX4_INFO("cpu resource check succeeded");
+        }
+        failed |= cpu_resource_check_failed;
+	}
+
+	/* ---- Parachute ---- */
+	{
+	    bool parachute_check_failed = !parachuteCheck(mavlink_log_pub, report_failures, status_flags);
+        if (parachute_check_failed) {
+            PX4_INFO("parachute check failed");
+        } else {
+            // PX4_INFO("parachute check succeeded");
+        }
+        failed |= parachute_check_failed;
+	}
+
+	/* ---- Prearm ---- */
+	{
+	    bool pre_arm_check_failed = !preArmCheck(mavlink_log_pub, status_flags, control_mode,
+					safety_button_available, safety_off, status, report_failures, is_arm_attempt);
+        if (pre_arm_check_failed && debug_mode) {
+            PX4_INFO("pre arm check failed");
+        } else {
+            // PX4_INFO("pre arm check succeeded");
+        }
+        failed |= pre_arm_check_failed;
+	}
+
+    if (failed && debug_mode) {
+        PX4_INFO("failed");
+    }
 	/* Report status */
 	return !failed;
 }

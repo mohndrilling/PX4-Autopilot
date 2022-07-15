@@ -124,6 +124,7 @@ then
 	#
 	# Load main mixer.
 	#
+	echo "INFO [rc.interface] loading mixer $MIXER"
 	if [ $MIXER_AUX = none -a $USE_IO = yes ]
 	then
 		set MIXER_AUX ${MIXER}
@@ -155,17 +156,17 @@ then
 
 	if mixer load ${OUTPUT_DEV} ${MIXER_FILE}
 	then
-		echo "INFO  [init] Mixer: ${MIXER_FILE} on ${OUTPUT_DEV}"
+		echo "INFO  [rc.interface] Mixer: ${MIXER_FILE} on ${OUTPUT_DEV}"
 
 	else
-		echo "ERROR  [init] Failed loading mixer: ${MIXER_FILE}"
+		echo "ERROR  [rc.interface] Failed loading mixer: ${MIXER_FILE}"
 		tune_control play -t 18 # tune 18 = PROG_PX4IO_ERR
 	fi
 
 else
 	if [ $MIXER != skip ]
 	then
-		echo "ERROR  [init] Mixer undefined"
+		echo "ERROR  [rc.interface] Mixer undefined"
 		tune_control play -t 18 # tune 18 = PROG_PX4IO_ERR
 	fi
 fi
@@ -193,21 +194,21 @@ then
 		then
 			if mixer append ${OUTPUT_DEV} ${MIXER_AUX_FILE}
 			then
-				echo "INFO  [init] Mixer: ${MIXER_AUX_FILE} appended to ${OUTPUT_DEV}"
+				echo "INFO  [rc.interface] Mixer: ${MIXER_AUX_FILE} appended to ${OUTPUT_DEV}"
 			else
-				echo "ERROR  [init] Failed appending mixer: ${MIXER_AUX_FILE}"
+				echo "ERROR  [rc.interface] Failed appending mixer: ${MIXER_AUX_FILE}"
 			fi
 		fi
 		if [ -e $OUTPUT_AUX_DEV -a $OUTPUT_MODE != hil ]
 		then
 			if mixer load ${OUTPUT_AUX_DEV} ${MIXER_AUX_FILE}
 			then
-				echo "INFO  [init] Mixer: ${MIXER_AUX_FILE} on ${OUTPUT_AUX_DEV}"
+				echo "INFO  [rc.interface] Mixer: ${MIXER_AUX_FILE} on ${OUTPUT_AUX_DEV}"
 			else
-				echo "ERROR  [init] Failed loading mixer: ${MIXER_AUX_FILE}"
+				echo "ERROR  [rc.interface] Failed loading mixer: ${MIXER_AUX_FILE}"
 			fi
 		else
-			echo "INFO  [init] setting PWM_AUX_OUT none"
+			echo "INFO  [rc.interface] setting PWM_AUX_OUT none"
 			set PWM_AUX_OUT none
 		fi
 
@@ -259,9 +260,9 @@ then
 
 	if mixer load ${OUTPUT_EXTRA_DEV} ${MIXER_EXTRA_FILE}
 	then
-		echo "INFO  [init] Mixer: ${MIXER_EXTRA_FILE} on ${OUTPUT_EXTRA_DEV}"
+		echo "INFO  [rc.interface] Mixer: ${MIXER_EXTRA_FILE} on ${OUTPUT_EXTRA_DEV}"
 	else
-		echo "ERROR  [init] Failed loading mixer: ${MIXER_EXTRA_FILE}"
+		echo "ERROR  [rc.interface] Failed loading mixer: ${MIXER_EXTRA_FILE}"
 		tune_control play -t 20
 	fi
 

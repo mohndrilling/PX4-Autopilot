@@ -5,11 +5,14 @@
 # NOTE: Script variables are declared/initialized/unset in the rcS script.
 #
 
+echo "INFO [rc.vehicle_setup]"
+
 #
 # Fixed wing setup.
 #
 if [ $VEHICLE_TYPE = fw ]
 then
+  echo "INFO [rc.vehicle_setup] vehicle type fixed wing"
 	if [ $MIXER = none ]
 	then
 		echo "FW mixer undefined"
@@ -27,6 +30,7 @@ fi
 #
 if [ $VEHICLE_TYPE = mc ]
 then
+	echo "INFO [rc.vehicle_setup] vehicle type multicopter"
 	if [ $MIXER = none ]
 	then
 		echo "MC mixer undefined"
@@ -44,6 +48,7 @@ fi
 #
 if [ $VEHICLE_TYPE = rover ]
 then
+  echo "INFO [rc.vehicle_setup] vehicle type ugv"
 	if [ $MIXER = none ]
 	then
 		echo "rover mixer undefined"
@@ -61,6 +66,7 @@ fi
 #
 if [ $VEHICLE_TYPE = vtol ]
 then
+	echo "INFO [rc.vehicle_setup] vehicle type vtol"
 	if [ $MIXER = none ]
 	then
 		echo "VTOL mixer undefined"
@@ -78,6 +84,7 @@ fi
 #
 if [ $VEHICLE_TYPE = airship ]
 then
+  echo "INFO [rc.vehicle_setup] vehicle type airship"
 	if [ $MIXER = none ]
 	then
 		echo "Airship mixer undefined"
@@ -95,6 +102,7 @@ fi
 #
 if [ $VEHICLE_TYPE = uuv ]
 then
+  echo "INFO [rc.vehicle_setup] vehicle type uuv"
 	if [ $MIXER = none ]
 	then
 		echo "UUV mixer undefined"
@@ -103,17 +111,32 @@ then
 	# Load mixer and configure outputs.
 	. ${R}etc/init.d/rc.interface
 
-	# Start standard vtol apps.
+	# Start standard uuv apps.
 	. ${R}etc/init.d/rc.uuv_apps
 fi
 
+#
+# AUV setup
+#
+if [ $VEHICLE_TYPE = auv ]
+then
+  echo "INFO [rc.vehicle_setup] vehicle type auv"
+	set MIXER pass
+  set MIXER_AUX pass
 
+	# Load mixer and configure outputs.
+	. ${R}etc/init.d/rc.interface
+
+	# Start standard uuv apps.
+	. ${R}etc/init.d/rc.auv_apps
+fi
 
 #
 # Generic setup (autostart ID not found).
 #
 if [ $VEHICLE_TYPE = none ]
 then
+  echo "INFO [rc.vehicle_setup] vehicle type not found"
 	echo "No autostart ID found"
 	ekf2 start &
 fi
