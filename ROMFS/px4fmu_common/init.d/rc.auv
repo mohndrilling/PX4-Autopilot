@@ -1,11 +1,11 @@
 #!/bin/sh
 #
-# UUV mohntech net_inspector parameters.
+# auv mohntech net_inspector parameters.
 #
 # NOTE: Script variables are declared/initialized/unset in the rcS script.
 #
 
-set VEHICLE_TYPE uuv
+set VEHICLE_TYPE auv
 
 # MAV_TYPE_SUBMARINE 12
 param set-default MAV_TYPE 12
@@ -19,7 +19,6 @@ param set-default PWM_MAIN_DISARM 1500
 # higher rates may damage analog servos.
 #
 set PWM_MAIN_RATE 50
-
 set MIXER pass
 
 # Enable servo output on pins 1-4

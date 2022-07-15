@@ -148,6 +148,7 @@ px4_add_romfs_files(
 
 	# [22000, 22999] Reserve for custom models
 
+    22000_auv
 	24001_dodeca_cox
 
 	50000_generic_ground_vehicle
@@ -158,5 +159,4 @@ px4_add_romfs_files(
 	60000_uuv_generic
 	60001_uuv_hippocampus
 	60002_uuv_bluerov2_heavy
-	60003_uuv_mohntech_net_inspector
 )

@@ -54,10 +54,12 @@ int mohntech_example_app_main(int argc, char *argv[])
         act.control[5] = 0.0f;
         act.control[6] = 0.0f;
         act.control[7] = 0.0f;
-        for (int j = 0; j < 500000; j++) {
-            act.control[i] = 1.0f;
+        for (float j = -1.0f; j < 1.0f; j+=0.1f) {
+            act.control[i] = j;
             orb_publish(ORB_ID(actuator_controls_0), act_pub, &act);
+            px4_usleep(150000);
         }
+        act.control[i] = 0.0f;
     }
 	PX4_INFO("Exiting mohntech_example_app!");
 	return 0;

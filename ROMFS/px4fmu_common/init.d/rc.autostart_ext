@@ -2,6 +2,7 @@
 #
 # External airframe startup script (on SD card)
 #
+echo "INFO [rc.autostart_ext]"
 set SDCARD_MIXERS_PATH ${SDCARD_EXT_PATH}/mixers
 
 if [ -e ${SDCARD_EXT_PATH}/rc.autostart ]
