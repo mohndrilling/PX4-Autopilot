@@ -60,6 +60,7 @@ int mohntech_example_app_main(int argc, char *argv[])
             px4_usleep(150000);
         }
         act.control[i] = 0.0f;
+        orb_publish(ORB_ID(actuator_controls_0), act_pub, &act);
     }
 	PX4_INFO("Exiting mohntech_example_app!");
 	return 0;
