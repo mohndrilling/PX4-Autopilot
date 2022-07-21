@@ -52,6 +52,40 @@ set USE_IO no
 set VEHICLE_TYPE none
 
 #
+# Start UART/Serial device drivers.
+# Note: rc.serial is auto-generated from Tools/serial/generate_config.py
+#
+. ${R}etc/init.d/rc.serial
+
+if [ $IO_PRESENT = no ]
+then
+  # Must be started after the serial config is read
+  rc_input start $RC_INPUT_ARGS
+fi
+
+# disable RC requirement to arm
+param set COM_RC_IN_MODE 1
+
+# select auv airframe by default
+param set SYS_AUTOSTART 22000
+
+# disable auto disarm by default
+param set COM_DISARM_LAND -1
+param set COM_DISARM_PRFLT -1
+
+# enable UAVCAN
+param set UAVCAN_ENABLE 3
+
+# disable power check (we aren't using the pixhawks power connections)
+param set CBRK_SUPPLY_CHK 894281
+
+# disable power source 1
+param set BAT1_SOURCE -1
+
+# set disarm pulse lenght
+# sometimes the default of 900 gets changed somewhere which makes all thrusters spin at maxspeed when disarming
+param set PWM_MAIN_DISARM 900
+
 # Print full system version.
 #
 ver all
@@ -65,11 +99,10 @@ then
 	then
 		if [ -f "/fs/microsd/.format" ]
 		then
-			echo "INFO [init] format /dev/mmcsd0 requested (/fs/microsd/.format)"
+			echo "INFO [rcS] format /dev/mmcsd0 requested (/fs/microsd/.format)"
 			set SDCARD_FORMAT yes
 			rm /fs/microsd/.format
 			umount /fs/microsd
-
 		else
 			set SDCARD_AVAILABLE yes
 		fi
@@ -77,22 +110,22 @@ then
 
 	if [ $SDCARD_AVAILABLE = no -o $SDCARD_FORMAT = yes ]
 	then
-		echo "INFO [init] formatting /dev/mmcsd0"
+		echo "INFO [rcS] formatting /dev/mmcsd0"
 		set STARTUP_TUNE 15 # tune 15 = SD_ERROR (overridden to SD_INIT if format + mount succeeds)
 
 		if mkfatfs -F 32 /dev/mmcsd0
 		then
-			echo "INFO [init] card formatted"
+			echo "INFO [rcS] card formatted"
 
 			if mount -t vfat /dev/mmcsd0 /fs/microsd
 			then
 				set SDCARD_AVAILABLE yes
 				set STARTUP_TUNE 14 # tune 14 = SD_INIT
 			else
-				echo "ERROR [init] card mount failed"
+				echo "ERROR [rcS] card mount failed"
 			fi
 		else
-			echo "ERROR [init] format failed"
+			echo "ERROR [rcS] format failed"
 		fi
 	fi
 
@@ -100,6 +133,7 @@ then
 	then
 		if hardfault_log check
 		then
+		  echo "INFO [rcS] microSD card is available"
 			set STARTUP_TUNE 2 # tune 2 = ERROR_TUNE
 			if hardfault_log commit
 			then
@@ -117,9 +151,9 @@ fi
 #
 if [ -f $FRC ]
 then
+  echo "INFO [rcS] using init script from microsd card"
 	. $FRC
 else
-
 	#
 	# Set the parameter file the board supports params on
 	# MTD device.
@@ -141,7 +175,7 @@ else
 	param select $PARAM_FILE
 	if ! param import
 	then
-		echo "ERROR [init] param import failed"
+		echo "ERROR [rcS] param import failed"
 		set STARTUP_TUNE 2 # tune 2 = ERROR_TUNE
 
 		param dump $PARAM_FILE
@@ -157,7 +191,7 @@ else
 		# try importing from backup file
 		if [ -f "/fs/microsd/parameters_backup.bson" ]
 		then
-			echo "[init] importing from parameter backup"
+			echo "[rcS] importing from parameter backup"
 
 			# dump current backup file contents for comparison
 			param dump /fs/microsd/parameters_backup.bson
@@ -256,9 +290,10 @@ else
 			# Use external startup file
 			if [ $SDCARD_AVAILABLE = yes ]
 			then
+			  echo "INFO [rcS] using autostart_ext"
 				set AUTOSTART_PATH etc/init.d/rc.autostart_ext
 			else
-				echo "ERROR [init] SD card not mounted - trying to load airframe from ROMFS"
+				echo "ERROR [rcS] SD card not mounted - trying to load airframe from ROMFS"
 			fi
 		fi
 		. ${R}$AUTOSTART_PATH
@@ -367,6 +402,7 @@ else
 	# Sensors System (start before Commander so Preflight checks are properly run).
 	# Commander needs to be this early for in-air-restarts.
 	#
+
 	if param greater SYS_HITL 0
 	then
 		set OUTPUT_MODE hil
@@ -438,18 +474,6 @@ else
 		. $BOARD_RC_MAVLINK
 	fi
 	unset BOARD_RC_MAVLINK
-
-	#
-	# Start UART/Serial device drivers.
-	# Note: rc.serial is auto-generated from Tools/serial/generate_config.py
-	#
-	. ${R}etc/init.d/rc.serial
-
-	if [ $IO_PRESENT = no ]
-	then
-		# Must be started after the serial config is read
-		rc_input start $RC_INPUT_ARGS
-	fi
 
 	# PPS capture driver (before pwm_out)
 	if param greater -s PPS_CAP_ENABLE 0

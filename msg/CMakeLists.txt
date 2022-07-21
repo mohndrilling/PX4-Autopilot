@@ -94,8 +94,8 @@ set(msg_files
 	heater_status.msg
 	home_position.msg
 	hover_thrust_estimate.msg
-	internal_combustion_engine_status.msg
 	input_rc.msg
+	internal_combustion_engine_status.msg
 	iridiumsbd_status.msg
 	irlock_report.msg
 	landing_gear.msg
@@ -144,8 +144,8 @@ set(msg_files
 	sensor_baro.msg
 	sensor_combined.msg
 	sensor_correction.msg
-	sensor_gps.msg
 	sensor_gnss_relative.msg
+	sensor_gps.msg
 	sensor_gyro.msg
 	sensor_gyro_fft.msg
 	sensor_gyro_fifo.msg
@@ -153,8 +153,8 @@ set(msg_files
 	sensor_mag.msg
 	sensor_preflight_mag.msg
 	sensor_selection.msg
-	sensors_status_imu.msg
 	sensors_status.msg
+	sensors_status_imu.msg
 	system_power.msg
 	takeoff_status.msg
 	task_stack_info.msg
@@ -171,8 +171,8 @@ set(msg_files
 	uavcan_parameter_value.msg
 	ulog_stream.msg
 	ulog_stream_ack.msg
-	uwb_grid.msg
 	uwb_distance.msg
+	uwb_grid.msg
 	vehicle_acceleration.msg
 	vehicle_air_data.msg
 	vehicle_angular_acceleration.msg

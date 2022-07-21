@@ -304,6 +304,8 @@ bool set_nav_state(vehicle_status_s &status, actuator_armed_s &armed, commander_
 
 	const bool is_armed = (status.arming_state == vehicle_status_s::ARMING_STATE_ARMED);
 	const bool data_link_loss_act_configured = (data_link_loss_act > link_loss_actions_t::DISABLED);
+    // TODO make param
+    const bool companion_connected = true;
 
 	bool old_failsafe = status.failsafe;
 	status.failsafe = false;
@@ -321,7 +323,7 @@ bool set_nav_state(vehicle_status_s &status, actuator_armed_s &armed, commander_
 	case commander_state_s::MAIN_STATE_ALTCTL:
 
 		// Require RC for all manual modes
-		if (status.rc_signal_lost && is_armed) {
+		if (status.rc_signal_lost && is_armed && !companion_connected) {
 			enable_failsafe(status, old_failsafe, mavlink_log_pub, event_failsafe_reason_t::no_rc);
 			set_link_loss_nav_state(status, armed, status_flags, internal_state, rc_loss_act, param_com_rcl_act_t);
 

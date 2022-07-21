@@ -71,10 +71,10 @@ MixingOutput::MixingOutput(const char *param_prefix, uint8_t max_num_outputs, Ou
 	: ModuleParams(&interface),
 	  _output_ramp_up(ramp_up),
 	  _control_subs{
+	{&interface, ORB_ID(actuator_controls)},
 	{&interface, ORB_ID(actuator_controls_0)},
 	{&interface, ORB_ID(actuator_controls_1)},
 	{&interface, ORB_ID(actuator_controls_2)},
-	{&interface, ORB_ID(actuator_controls_3)},
 },
 _scheduling_policy(scheduling_policy),
 _support_esc_calibration(support_esc_calibration),

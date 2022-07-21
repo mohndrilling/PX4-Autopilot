@@ -38,6 +38,13 @@ set LOGGER_BUF                  1000
 
 set RUN_MINIMAL_SHELL           no
 
+# disable RC requirement to arm
+set COM_RC_IN_MODE 1
+
+# disable auto disarm by default
+set COM_DISARM_LAND -1
+set COM_DISARM_PRFLT -1
+
 # Use the variable set by sitl_run.sh to choose the model settings.
 if [ "$PX4_SIM_MODEL" = "shell" ]; then
 	set RUN_MINIMAL_SHELL yes
@@ -45,6 +52,7 @@ else
 	# Find the matching Autostart ID (file name has the form: [0-9]+_${PX4_SIM_MODEL})
 	# TODO: unify with rc.autostart generation
 	# shellcheck disable=SC2012
+	echo "INFO  [init] used PX4_SIM_MODEL: $PX4_SIM_MODEL ${R}etc/init.d-posix/airframes)"
 	REQUESTED_AUTOSTART=$(ls "${R}etc/init.d-posix/airframes" | sed -n 's/^\([0-9][0-9]*\)_'${PX4_SIM_MODEL}'$/\1/p')
 	if [ -z "$REQUESTED_AUTOSTART" ]; then
 		echo "ERROR  [init] Unknown model $PX4_SIM_MODEL (not found by name on ${R}etc/init.d-posix/airframes)"
@@ -95,10 +103,9 @@ fi
 
 if param compare SYS_AUTOCONFIG 1
 then
+	# Reset params except Airframe, RC calibration, sensor calibration, flight modes, total flight time, and next flight UUID.
+	param reset_all SYS_AUTOSTART RC* CAL_* COM_FLTMODE* LND_FLIGHT* TC_* COM_FLIGHT*
 	set AUTOCNF yes
-
-	# Wipe out params except RC*, flight modes, total flight time, accel cal, gyro cal, next flight UUID
-	param reset_all SYS_AUTO* RC* COM_FLTMODE* LND_FLIGHT* TC_* CAL_ACC* CAL_GYRO* COM_FLIGHT*
 fi
 
 # multi-instance setup

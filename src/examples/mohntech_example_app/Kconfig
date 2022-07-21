@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_MOHNTECH_EXAMPLE_APP
+	bool "mohntech_example_app"
+	default n
+	---help---
+		Enable support for mohntech_example_app
