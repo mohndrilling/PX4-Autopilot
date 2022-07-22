@@ -87,9 +87,22 @@ UavcanEscController::update_outputs(bool stop_motors, uint16_t outputs[MAX_ACTUA
 	 */
 	uavcan::equipment::esc::RawCommand msg;
 
+    PX4_INFO(
+	    "outputs: %i, %i, %i, %i, %i, %i, %i, %i",
+	    outputs[0],
+	    outputs[1],
+	    outputs[2],
+	    outputs[3],
+	    outputs[4],
+	    outputs[5],
+	    outputs[6],
+	    outputs[7]
+	 );
+
 	for (unsigned i = 0; i < num_outputs; i++) {
 		if (stop_motors || outputs[i] == DISARMED_OUTPUT_VALUE) {
-			msg.cmd.push_back(static_cast<unsigned>(0));
+		    // TODO mohntech: msg.cmd.push_back(static_cast<unsigned>(0));
+			msg.cmd.push_back(static_cast<unsigned>(4096));
 
 		} else {
 			msg.cmd.push_back(static_cast<int>(outputs[i]));
@@ -119,6 +132,18 @@ UavcanEscController::update_outputs(bool stop_motors, uint16_t outputs[MAX_ACTUA
 	 * Publish the command message to the bus
 	 * Note that for a quadrotor it takes one CAN frame
 	 */
+
+	 PX4_INFO(
+	    "msg: %i, %i, %i, %i, %i, %i, %i, %i",
+	    msg.cmd[0],
+	    msg.cmd[1],
+	    msg.cmd[2],
+	    msg.cmd[3],
+	    msg.cmd[4],
+	    msg.cmd[5],
+	    msg.cmd[6],
+	    msg.cmd[7]
+	 );
 	_uavcan_pub_raw_cmd.broadcast(msg);
 }
 

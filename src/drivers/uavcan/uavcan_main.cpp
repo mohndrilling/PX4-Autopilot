@@ -984,6 +984,19 @@ UavcanNode::ioctl(file *filp, int cmd, unsigned long arg)
 bool UavcanMixingInterfaceESC::updateOutputs(bool stop_motors, uint16_t outputs[MAX_ACTUATORS], unsigned num_outputs,
 		unsigned num_control_groups_updated)
 {
+    PX4_INFO(
+        "stop_motors: %s, outputs: %i, %i, %i, %i, %i, %i, %i, %i, num_outputs: %i",
+        stop_motors ? "true" : "false",
+        outputs[0],
+        outputs[1],
+        outputs[2],
+        outputs[3],
+        outputs[4],
+        outputs[5],
+        outputs[6],
+        outputs[7],
+        num_outputs
+    );
 	_esc_controller.update_outputs(stop_motors, outputs, num_outputs);
 	return true;
 }
