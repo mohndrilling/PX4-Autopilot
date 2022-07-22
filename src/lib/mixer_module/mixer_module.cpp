@@ -837,7 +837,8 @@ MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updat
 	} else if (_armed.force_failsafe) {
 		// overwrite outputs in case of force_failsafe with _failsafe_value values
 		for (size_t i = 0; i < _max_num_outputs; i++) {
-			_current_output_value[i] = actualFailsafeValue(i);
+			// TODO mohntech: _current_output_value[i] = actualFailsafeValue(i);
+			_current_output_value[i] = 4096;
 		}
 
 	} else {
