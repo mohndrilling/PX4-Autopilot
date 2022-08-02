@@ -149,8 +149,12 @@ void listener(const orb_id_t &id, unsigned num_msgs, int topic_instance,
 				}
 
 			} else {
+                PX4_INFO_RAW("Waited for %.1f seconds without a message.\n", (double) MESSAGE_TIMEOUT_S);
+				/*
+				TODO mohntech:
 				PX4_INFO_RAW("Waited for %.1f seconds without a message. Giving up.\n", (double) MESSAGE_TIMEOUT_S);
 				break;
+				*/
 			}
 		}
 

@@ -12,7 +12,8 @@ param set-default MAV_TYPE 12
 
 param set-default PWM_MAIN_MAX 1950
 param set-default PWM_MAIN_MIN 1050
-param set-default PWM_MAIN_DISARM 1500
+# VERY IMPORTANT another value than 900 for PWM_MAIN_DISARM leads to all thrusters spinning at full speed at disarm
+param set-default PWM_MAIN_DISARM 900
 
 #
 # PWM Hz - 50 Hz is the normal rate in RC cars, boats etc,

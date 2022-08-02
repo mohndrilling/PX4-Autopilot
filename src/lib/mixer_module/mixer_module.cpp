@@ -71,10 +71,10 @@ MixingOutput::MixingOutput(const char *param_prefix, uint8_t max_num_outputs, Ou
 	: ModuleParams(&interface),
 	  _output_ramp_up(ramp_up),
 	  _control_subs{
+	{&interface, ORB_ID(actuator_controls)},
 	{&interface, ORB_ID(actuator_controls_0)},
 	{&interface, ORB_ID(actuator_controls_1)},
 	{&interface, ORB_ID(actuator_controls_2)},
-	{&interface, ORB_ID(actuator_controls_3)},
 },
 _scheduling_policy(scheduling_policy),
 _support_esc_calibration(support_esc_calibration),
@@ -208,7 +208,8 @@ void MixingOutput::updateParams()
 			}
 
 			if (_param_handles[i].disarmed != PARAM_INVALID && param_get(_param_handles[i].disarmed, &val) == 0) {
-				_disarmed_value[i] = val;
+				// TODO mohntech: _disarmed_value[i] = val;
+				_disarmed_value[i] = 4096;
 			}
 
 			if (_param_handles[i].min != PARAM_INVALID && param_get(_param_handles[i].min, &val) == 0) {
@@ -532,7 +533,8 @@ void MixingOutput::setAllDisarmedValues(uint16_t value)
 {
 	for (unsigned i = 0; i < MAX_ACTUATORS; i++) {
 		_param_handles[i].disarmed = PARAM_INVALID;
-		_disarmed_value[i] = value;
+		// TODO mohntech: _disarmed_value[i] = value;
+		_disarmed_value[i] = 4096;
 	}
 }
 
@@ -587,7 +589,8 @@ unsigned MixingOutput::motorTest()
 		if (in_test_mode != _motor_test.in_test_mode) {
 			// reset all outputs to disarmed on state change
 			for (int i = 0; i < MAX_ACTUATORS; ++i) {
-				_current_output_value[i] = _disarmed_value[i];
+				// TODO mohntech: _current_output_value[i] = _disarmed_value[i];
+				_current_output_value[i] = 4096;
 			}
 		}
 
@@ -596,7 +599,8 @@ unsigned MixingOutput::motorTest()
 
 			if (idx < MAX_ACTUATORS) {
 				if (test_motor.value < 0.f) {
-					_current_output_value[reorderedMotorIndex(idx)] = _disarmed_value[idx];
+					// TODO mohntech: _current_output_value[reorderedMotorIndex(idx)] = _disarmed_value[idx];
+					_current_output_value[idx] = 4096;
 
 				} else {
 					_current_output_value[reorderedMotorIndex(idx)] =
@@ -623,7 +627,8 @@ unsigned MixingOutput::motorTest()
 		_motor_test.timeout = 0;
 
 		for (int i = 0; i < MAX_ACTUATORS; ++i) {
-			_current_output_value[i] = _disarmed_value[i];
+			// TODO mohntech: _current_output_value[i] = _disarmed_value[i];
+			_current_output_value[i] = 4096;
 		}
 
 		had_update = true;
@@ -719,7 +724,8 @@ bool MixingOutput::updateStaticMixer()
 	/* overwrite outputs in case of force_failsafe with _failsafe_value values */
 	if (_armed.force_failsafe) {
 		for (size_t i = 0; i < mixed_num_outputs; i++) {
-			_current_output_value[i] = _failsafe_value[i];
+			// TODO mohntech: _current_output_value[i] = _failsafe_value[i];
+			_current_output_value[i] = 4096;
 		}
 	}
 
@@ -728,7 +734,8 @@ bool MixingOutput::updateStaticMixer()
 	/* overwrite outputs in case of lockdown with disarmed values */
 	if (_armed.lockdown || _armed.manual_lockdown) {
 		for (size_t i = 0; i < mixed_num_outputs; i++) {
-			_current_output_value[i] = _disarmed_value[i];
+		    // TODO mohntech: _current_output_value[i] = _disarmed_value[i];
+			_current_output_value[i] = 4096;
 		}
 
 		stop_motors = true;
@@ -821,7 +828,8 @@ MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updat
 	if (_armed.lockdown || _armed.manual_lockdown) {
 		// overwrite outputs in case of lockdown with disarmed values
 		for (size_t i = 0; i < _max_num_outputs; i++) {
-			_current_output_value[i] = _disarmed_value[i];
+			// TODO mohntech: _current_output_value[i] = _disarmed_value[i];
+			_current_output_value[i] = 4096;
 		}
 
 		stop_motors = true;
@@ -829,7 +837,8 @@ MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updat
 	} else if (_armed.force_failsafe) {
 		// overwrite outputs in case of force_failsafe with _failsafe_value values
 		for (size_t i = 0; i < _max_num_outputs; i++) {
-			_current_output_value[i] = actualFailsafeValue(i);
+			// TODO mohntech: _current_output_value[i] = actualFailsafeValue(i);
+			_current_output_value[i] = 4096;
 		}
 
 	} else {
@@ -840,6 +849,7 @@ MixingOutput::limitAndUpdateOutputs(float outputs[MAX_ACTUATORS], bool has_updat
 	/* now return the outputs to the driver */
 	if (_interface.updateOutputs(stop_motors, _current_output_value, _max_num_outputs, has_updates)) {
 		actuator_outputs_s actuator_outputs{};
+
 		setAndPublishActuatorOutputs(_max_num_outputs, actuator_outputs);
 
 		updateLatencyPerfCounter(actuator_outputs);
@@ -938,7 +948,8 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 	case OutputLimitState::OFF:
 	case OutputLimitState::INIT:
 		for (int i = 0; i < num_channels; i++) {
-			_current_output_value[i] = _disarmed_value[i];
+			// TODO mohntech: _current_output_value[i] = _disarmed_value[i];
+			_current_output_value[i] = 4096;
 		}
 
 		break;
@@ -959,7 +970,8 @@ MixingOutput::output_limit_calc(const bool armed, const int num_channels, const 
 
 				/* check for invalid / disabled channels */
 				if (!PX4_ISFINITE(control_value)) {
-					_current_output_value[i] = _disarmed_value[i];
+					// TODO mohntech: _current_output_value[i] = _disarmed_value[i];
+					_current_output_value[i] = 4096;
 					continue;
 				}
 

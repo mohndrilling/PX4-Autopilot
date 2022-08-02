@@ -2848,7 +2848,7 @@ Commander::run()
 			checkWindSpeedThresholds();
 		}
 
-		_vehicle_status_flags.flight_terminated = _actuator_armed.force_failsafe || _actuator_armed.manual_lockdown;
+		_status_flags.flight_terminated = _armed.force_failsafe || _armed.manual_lockdown;
 
 		/* Get current timestamp */
 		const hrt_abstime now = hrt_absolute_time();
@@ -3823,7 +3823,13 @@ void Commander::battery_status_check()
 			}
 		}
 
-		_last_connected_batteries.set(index, battery.connected);
+		if (battery.connected) {
+			_last_connected_batteries |= 1 << index;
+
+		} else {
+			_last_connected_batteries &= ~(1 << index);
+		}
+
 		_last_battery_mode[index] = battery.mode;
 
 		if (battery.connected) {

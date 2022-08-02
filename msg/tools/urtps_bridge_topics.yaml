@@ -88,3 +88,6 @@ rtps:
     send:    true
   - msg:     sensor_combined
     send:    true
+  # new topics
+  - msg:     actuator_controls
+    receive: true

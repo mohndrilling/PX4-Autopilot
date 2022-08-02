@@ -14,3 +14,6 @@ ekf2 start &
 ###############################################################################
 #                        End Estimator Group Selection                        #
 ###############################################################################
+
+# start micrortps_client to enable ROS2 communication
+micrortps_client start

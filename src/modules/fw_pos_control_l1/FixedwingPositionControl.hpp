@@ -409,7 +409,7 @@ private:
 	 *
 	 * @param dt Time step
 	 */
-	void update_desired_altitude(float dt);
+	void		update_desired_altitude(float dt);
 
 	/**
 	 * @brief Updates timing information for landed and in-air states.
@@ -419,53 +419,38 @@ private:
 	void update_in_air_states(const hrt_abstime now);
 
 	/**
+	 * @brief Updates the time since the last position control call.
+	 *
+	 * @param now Current system time [us]
+	 * @return Time since last position control call [s]
+	 */
+	float update_position_control_mode_timestep(const hrt_abstime now);
+
+	/**
 	 * @brief Moves the current position setpoint to a value far ahead of the current vehicle yaw when in  a VTOL
 	 * transition.
 	 *
-	 * @param[in,out] current_sp Current position setpoint
+	 * @param[in,out] current_sp current position setpoint
 	 */
 	void move_position_setpoint_for_vtol_transition(position_setpoint_s &current_sp);
 
-	/**
-	 * @brief Changes the position setpoint type to achieve the desired behavior in some instances.
-	 *
-	 * @param pos_sp_curr Current position setpoint
-	 * @return Adjusted position setpoint type
-	 */
-	uint8_t	handle_setpoint_type(const position_setpoint_s &pos_sp_curr);
+	uint8_t		handle_setpoint_type(const uint8_t setpoint_type, const position_setpoint_s &pos_sp_curr);
+	void		control_auto(const hrt_abstime &now, const Vector2d &curr_pos, const Vector2f &ground_speed,
+				     const position_setpoint_s &pos_sp_prev,
+				     const position_setpoint_s &pos_sp_curr, const position_setpoint_s &pos_sp_next);
 
-	/* automatic control methods */
+	void		control_auto_fixed_bank_alt_hold(const hrt_abstime &now);
+	void		control_auto_descend(const hrt_abstime &now);
 
-	/**
-	 * @brief Automatic position control for waypoints, orbits, and velocity control
-	 *
-	 * @param control_interval Time since last position control call [s]
-	 * @param curr_pos Current 2D local position vector of vehicle [m]
-	 * @param ground_speed Local 2D ground speed of vehicle [m/s]
-	 * @param pos_sp_prev previous position setpoint
-	 * @param pos_sp_curr current position setpoint
-	 * @param pos_sp_next next position setpoint
-	 */
-	void control_auto(const float control_interval, const Vector2d &curr_pos, const Vector2f &ground_speed,
-			  const position_setpoint_s &pos_sp_prev, const position_setpoint_s &pos_sp_curr, const position_setpoint_s &pos_sp_next);
-
-	/**
-	 * @brief Controls altitude and airspeed for a fixed-bank loiter.
-	 *
-	 * Used as a failsafe mode after a lateral position estimate failure.
-	 *
-	 * @param control_interval Time since last position control call [s]
-	 */
-	void control_auto_fixed_bank_alt_hold(const float control_interval);
-
-	/**
-	 * @brief Control airspeed with a fixed descent rate and roll angle.
-	 *
-	 * Used as a failsafe mode after a lateral position estimate failure.
-	 *
-	 * @param control_interval Time since last position control call [s]
-	 */
-	void control_auto_descend(const float control_interval);
+	void		control_auto_position(const hrt_abstime &now, const float dt, const Vector2d &curr_pos,
+					      const Vector2f &ground_speed,
+					      const position_setpoint_s &pos_sp_prev, const position_setpoint_s &pos_sp_curr);
+	void		control_auto_loiter(const hrt_abstime &now, const float dt, const Vector2d &curr_pos,
+					    const Vector2f &ground_speed,
+					    const position_setpoint_s &pos_sp_prev, const position_setpoint_s &pos_sp_curr, const position_setpoint_s &pos_sp_next);
+	void		control_auto_velocity(const hrt_abstime &now, const float dt, const Vector2d &curr_pos,
+					      const Vector2f &ground_speed,
+					      const position_setpoint_s &pos_sp_prev, const position_setpoint_s &pos_sp_curr);
 
 	/**
 	 * @brief Vehicle control for position waypoints.
