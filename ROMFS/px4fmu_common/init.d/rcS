@@ -14,14 +14,12 @@ set +e
 # NOTE: COMMENT LINES ARE REMOVED BEFORE STORED IN ROMFS.
 #
 #------------------------------------------------------------------------------
-
 #
 # Set default paramter values.
 # Do not add intra word spaces
 # it wastes flash
 #
 set R /
-set AUTOCNF no
 set FCONFIG /fs/microsd/etc/config.txt
 set FEXTRAS /fs/microsd/etc/extras.txt
 set FRC /fs/microsd/etc/rc.txt
@@ -49,7 +47,6 @@ set SDCARD_FORMAT no
 set SDCARD_MIXERS_PATH /fs/microsd/etc/mixers
 set STARTUP_TUNE 1
 set USE_IO no
-set VEHICLE_TYPE none
 
 #
 # Start UART/Serial device drivers.
@@ -131,6 +128,7 @@ then
 
 	if [ $SDCARD_AVAILABLE = yes ]
 	then
+
 		if hardfault_log check
 		then
 		  echo "INFO [rcS] microSD card is available"
@@ -211,13 +209,12 @@ else
 	fi
 
 	#
-	# Set AUTOCNF flag to use it in AUTOSTART scripts.
+	# If the airframe has been previously reset SYS_AUTCONFIG will have been set to 1 and other params will be reset on the next boot.
 	#
 	if param greater SYS_AUTOCONFIG 0
 	then
-		# Wipe out params except RC*, flight modes, total flight time, calibration parameters, next flight UUID
-		param reset_all SYS_AUTO* RC* COM_FLTMODE* LND_FLIGHT* TC_* CAL_ACC* CAL_GYRO* COM_FLIGHT*
-		set AUTOCNF yes
+		# Reset params except Airframe, RC calibration, sensor calibration, flight modes, total flight time, and next flight UUID.
+		param reset_all SYS_AUTOSTART RC* CAL_* COM_FLTMODE* LND_FLIGHT* TC_* COM_FLIGHT*
 	fi
 
 	#
@@ -310,14 +307,6 @@ else
 	fi
 
 	#
-	# If autoconfig parameter was set, reset it and save parameters.
-	#
-	if [ $AUTOCNF = yes ]
-	then
-		param set SYS_AUTOCONFIG 0
-	fi
-
-	#
 	# Check if UAVCAN is enabled, default to it for ESCs.
 	#
 	if param greater -s UAVCAN_ENABLE 0
@@ -333,9 +322,9 @@ else
 			tune_control play error
 		fi
 	else
-		if param greater -s UAVCAN_V1_ENABLE 0
+		if param greater -s CYPHAL_ENABLE 0
 		then
-			uavcan_v1 start
+			cyphal start
 		fi
 	fi
 
@@ -589,7 +578,6 @@ fi
 # Unset all script parameters to free RAM.
 #
 unset R
-unset AUTOCNF
 unset FCONFIG
 unset FEXTRAS
 unset FRC

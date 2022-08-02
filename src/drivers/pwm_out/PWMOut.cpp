@@ -613,6 +613,14 @@ void PWMOut::update_params()
 						int32_t pwm_fail_new = _mixing_output.failsafeValue(i);
 						param_set(param_find(str), &pwm_fail_new);
 					}
+
+				} else {
+					if (pwm_default_channel_mask & 1 << i) {
+						_mixing_output.failsafeValue(i) = PWM_MOTOR_OFF;
+
+					} else {
+						_mixing_output.failsafeValue(i) = PWM_SERVO_STOP;
+					}
 				}
 
 			} else {
@@ -717,8 +725,6 @@ int PWMOut::pwm_ioctl(device::file_t *filp, int cmd, unsigned long arg)
 
 	case PWM_SERVO_SET_ARM_OK:
 	case PWM_SERVO_CLEAR_ARM_OK:
-	case PWM_SERVO_SET_FORCE_SAFETY_OFF:
-	case PWM_SERVO_SET_FORCE_SAFETY_ON:
 		break;
 
 	case PWM_SERVO_DISARM:

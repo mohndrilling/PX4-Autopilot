@@ -40,8 +40,6 @@ px4_add_romfs_files(
 	babyshark.main.mix
 	blade130.main.mix
 	CCPM.main.mix
-	claire.aux.mix
-	claire.main.mix
 	cloudship.main.mix
 	coax.main.mix
 	delta.main.mix
@@ -62,6 +60,7 @@ px4_add_romfs_files(
 	octo_cox_w.main.mix
 	octo_+.main.mix
 	octo_x.main.mix
+	pass.main.mix
 	pass.aux.mix
 	pass.main.mix
 	quad_dc.main.mix
@@ -84,7 +83,6 @@ px4_add_romfs_files(
 	tri_y_yaw-.main.mix
 	uuv_x.main.mix
 	vectored6dof.main.mix
-	Viper.main.mix
 	vtol_AAERT.aux.mix
 	vtol_AAVVT.aux.mix
 	vtol_TTTTAAER.aux.mix

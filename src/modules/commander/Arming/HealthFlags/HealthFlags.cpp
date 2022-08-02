@@ -82,11 +82,11 @@ void set_health_flags_healthy(uint64_t subsystem_type, bool healthy, vehicle_sta
 
 void _print_sub(const char *name, const vehicle_status_s &status, uint64_t bit)
 {
-	PX4_INFO("%s:\t\t%s\t%s", name,
-		 (status.onboard_control_sensors_enabled & bit) ? "EN" : " ",
+	PX4_INFO("%s:\t\t%s\t\t%s", name,
+		 (status.onboard_control_sensors_enabled & bit) ? "ENABLED" : "NOT ENABLED",
 		 (status.onboard_control_sensors_present & bit) ?
-		 ((status.onboard_control_sensors_health & bit) ? "OK" : "ERR") :
-		 (status.onboard_control_sensors_enabled & bit) ? "OFF" : "");
+		 ((status.onboard_control_sensors_health & bit) ? "OK" : "ERROR") :
+		 (status.onboard_control_sensors_enabled & bit) ? "OFF" : "NOT PRESENT");
 }
 
 void print_health_flags(const vehicle_status_s &status)
@@ -97,10 +97,10 @@ void print_health_flags(const vehicle_status_s &status)
 	_print_sub("GYRO", status, subsystem_info_s::SUBSYSTEM_TYPE_GYRO);
 	_print_sub("ACC", status, subsystem_info_s::SUBSYSTEM_TYPE_ACC);
 	_print_sub("MAG", status, subsystem_info_s::SUBSYSTEM_TYPE_MAG);
-	_print_sub("PRESS", status, subsystem_info_s::SUBSYSTEM_TYPE_ABSPRESSURE);
-	_print_sub("AIRSP", status, subsystem_info_s::SUBSYSTEM_TYPE_DIFFPRESSURE);
+	_print_sub("PRESSURE", status, subsystem_info_s::SUBSYSTEM_TYPE_ABSPRESSURE);
+	_print_sub("AIRSPEED", status, subsystem_info_s::SUBSYSTEM_TYPE_DIFFPRESSURE);
 	_print_sub("GPS", status, subsystem_info_s::SUBSYSTEM_TYPE_GPS);
-	_print_sub("OPT", status, subsystem_info_s::SUBSYSTEM_TYPE_OPTICALFLOW);
+	_print_sub("OPTICAL FLOW", status, subsystem_info_s::SUBSYSTEM_TYPE_OPTICALFLOW);
 	_print_sub("VIO", status, subsystem_info_s::SUBSYSTEM_TYPE_CVPOSITION);
 	_print_sub("LASER", status, subsystem_info_s::SUBSYSTEM_TYPE_LASERPOSITION);
 	_print_sub("GTRUTH", status, subsystem_info_s::SUBSYSTEM_TYPE_EXTERNALGROUNDTRUTH);

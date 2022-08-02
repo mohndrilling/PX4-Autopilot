@@ -52,10 +52,11 @@ static constexpr unsigned max_mandatory_baro_count = 1;
 
 bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_status_s &status,
 				    vehicle_status_flags_s &status_flags, const vehicle_control_mode_s &control_mode,
-				    bool report_failures, const bool prearm, const hrt_abstime &time_since_boot)
+				    bool report_failures, const hrt_abstime &time_since_boot,
+				    const bool safety_button_available, const bool safety_off,
+				    const bool is_arm_attempt)
 {
-	report_failures = (report_failures && status_flags.system_hotplug_timeout
-			   && !status_flags.calibration_enabled);
+	report_failures = (report_failures && !status_flags.calibration_enabled);
 
 	bool failed = false;
 	bool debug_mode = false;
@@ -176,7 +177,6 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
             }
             failed |= !dist_available;
 		}
-
 	}
 
 	/* ---- AIRSPEED ---- */
@@ -196,10 +196,11 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
 
 		const float arming_max_airspeed_allowed = airspeed_trim / 2.0f; // set to half of trim airspeed
 
-		if (!airspeedCheck(mavlink_log_pub, status, optional, report_failures, prearm, (bool)max_airspeed_check_en,
+		if (!airspeedCheck(mavlink_log_pub, status, optional, report_failures, is_arm_attempt, (bool)max_airspeed_check_en,
 				   arming_max_airspeed_allowed)
 		    && !(bool)optional) {
-			failed = true;
+		    PX4_INFO("airspeed check failed");
+			failed |= true;
 		}
 	}
 
@@ -327,6 +328,9 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
         failed |= parachute_check_failed;
 	}
 
+    if (failed && debug_mode) {
+        PX4_INFO("failed");
+    }
 	/* Report status */
 	return !failed;
 }
