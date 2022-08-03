@@ -74,9 +74,9 @@ bool PreFlightCheck::preArmCheck(orb_advert_t *mavlink_log_pub, const vehicle_st
 		prearm_ok = false;
 	}
 
-    bool companion_connected = true;
+    bool ground_station_control = true;
 	// manual control mode require valid manual control (rc)
-	if (control_mode.flag_control_manual_enabled && status.rc_signal_lost && !companion_connected) {
+	if (control_mode.flag_control_manual_enabled && status.rc_signal_lost && !ground_station_control) {
 		if (report_fail) { mavlink_log_critical(mavlink_log_pub, "Arming denied! manual control lost"); }
         if (debug_mode) {PX4_INFO("preArm check failed: manual control lost"); }
         prearm_ok = false;

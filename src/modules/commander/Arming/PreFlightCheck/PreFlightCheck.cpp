@@ -230,8 +230,8 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
 
 	/* ---- SYSTEM POWER ---- */
 	if (status_flags.power_input_valid && !status_flags.circuit_breaker_engaged_power_check) {
-		if (!powerCheck(mavlink_log_pub, status, report_failures, prearm)) {
-			PX4_INFO("system power check failed");
+		if (!powerCheck(mavlink_log_pub, status, report_failures)) {
+		    PX4_INFO("system power check failed");
 			failed = true;
 		}
 	}
@@ -279,7 +279,7 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
 	}
 
 	/* ---- Failure Detector ---- */
-	if (!failureDetectorCheck(mavlink_log_pub, status, report_failures, prearm)) {
+	if (!failureDetectorCheck(mavlink_log_pub, status, report_failures)) {
 	    PX4_INFO("failure detected");
 		failed = true;
 	}
@@ -326,6 +326,18 @@ bool PreFlightCheck::preflightCheck(orb_advert_t *mavlink_log_pub, vehicle_statu
             // PX4_INFO("parachute check succeeded");
         }
         failed |= parachute_check_failed;
+	}
+
+	/* ---- Prearm ---- */
+	{
+	    bool pre_arm_check_failed = !preArmCheck(mavlink_log_pub, status_flags, control_mode,
+					safety_button_available, safety_off, status, report_failures, is_arm_attempt);
+        if (pre_arm_check_failed && debug_mode) {
+            PX4_INFO("pre arm check failed");
+        } else {
+            // PX4_INFO("pre arm check succeeded");
+        }
+        failed |= pre_arm_check_failed;
 	}
 
     if (failed && debug_mode) {
