@@ -62,7 +62,6 @@ px4_add_romfs_files(
 	octo_x.main.mix
 	pass.main.mix
 	pass.aux.mix
-	pass.main.mix
 	quad_dc.main.mix
 	quad_h.main.mix
 	quad_+.main.mix

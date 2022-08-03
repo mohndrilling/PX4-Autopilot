@@ -89,8 +89,7 @@ UavcanEscController::update_outputs(bool stop_motors, uint16_t outputs[MAX_ACTUA
 
 	for (unsigned i = 0; i < num_outputs; i++) {
 		if (stop_motors || outputs[i] == DISARMED_OUTPUT_VALUE) {
-		    // TODO mohntech: msg.cmd.push_back(static_cast<unsigned>(0));
-			msg.cmd.push_back(static_cast<unsigned>(4096));
+			msg.cmd.push_back(static_cast<unsigned>(0));
 
 		} else {
 			msg.cmd.push_back(static_cast<int>(outputs[i]));
@@ -120,7 +119,6 @@ UavcanEscController::update_outputs(bool stop_motors, uint16_t outputs[MAX_ACTUA
 	 * Publish the command message to the bus
 	 * Note that for a quadrotor it takes one CAN frame
 	 */
-
 	_uavcan_pub_raw_cmd.broadcast(msg);
 }
 
