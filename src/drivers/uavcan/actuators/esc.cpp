@@ -86,7 +86,6 @@ UavcanEscController::update_outputs(bool stop_motors, uint16_t outputs[MAX_ACTUA
 	 * If unarmed, we publish an empty message anyway
 	 */
 	uavcan::equipment::esc::RawCommand msg;
-
 	for (unsigned i = 0; i < num_outputs; i++) {
 		if (stop_motors || outputs[i] == DISARMED_OUTPUT_VALUE) {
 		    // TODO mohntech: msg.cmd.push_back(static_cast<unsigned>(0));
@@ -120,7 +119,17 @@ UavcanEscController::update_outputs(bool stop_motors, uint16_t outputs[MAX_ACTUA
 	 * Publish the command message to the bus
 	 * Note that for a quadrotor it takes one CAN frame
 	 */
-
+    PX4_INFO(
+        "output: %i, %i, %i, %i, %i, %i, %i, %i",
+        msg.cmd[0],
+        msg.cmd[1],
+        msg.cmd[2],
+        msg.cmd[3],
+        msg.cmd[4],
+        msg.cmd[5],
+        msg.cmd[6],
+        msg.cmd[7]
+    );
 	_uavcan_pub_raw_cmd.broadcast(msg);
 }
 
@@ -151,6 +160,32 @@ UavcanEscController::esc_status_sub_cb(const uavcan::ReceivedDataStructure<uavca
 		_esc_status.esc_armed_flags = (1 << _rotor_count) - 1;
 		_esc_status.timestamp = hrt_absolute_time();
 		_esc_status_pub.publish(_esc_status);
+		/*
+		printf(
+		    "timestamp %f, esc_address %i, esc_index %i, esc_voltage %f, esc_current %f, esc_temperature %f, esc_rpm %i, power_rating_pct %i, esc_errorcount %i\n",
+		    (double) ref.timestamp,
+		    (int) ref.esc_address,
+		    (int) msg.esc_index,
+		    (double) ref.esc_voltage,
+		    (double) ref.esc_current,
+		    (double) ref.esc_temperature,
+		    (int) ref.esc_rpm,
+		    (int) msg.power_rating_pct,
+		    (int) ref.esc_errorcount
+		);
+		*/
+		/*
+		printf(
+		    "timestamp %f, esc_address %i, esc_voltage %f, esc_current %f, esc_temperature %f, esc_rpm %i, power_rating_pct %i\n",
+		    (double) ref.timestamp,
+		    (int) ref.esc_address,
+		    (double) ref.esc_voltage,
+		    (double) ref.esc_current,
+		    (double) ref.esc_temperature,
+		    (int) ref.esc_rpm,
+		    (int) msg.power_rating_pct
+		);
+		*/
 	}
 }
 

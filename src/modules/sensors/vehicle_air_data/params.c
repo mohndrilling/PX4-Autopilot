@@ -53,3 +53,22 @@ PARAM_DEFINE_FLOAT(SENS_BARO_QNH, 1013.25f);
  * @unit Hz
  */
 PARAM_DEFINE_FLOAT(SENS_BARO_RATE, 20.0f);
+
+/**
+ * air pressure or fluid pressure
+ *
+ * @min 0
+ * @max 1
+ * @group Sensors
+ */
+PARAM_DEFINE_INT32(IN_AIR, 0);
+
+/**
+ * using external MS5837-30BA differential pressure sensor instead of ms5611 internal
+ *
+ * @min 0
+ * @max 1
+ * @group Sensors
+ */
+PARAM_DEFINE_INT32(SENS_EN_MS5837, 1);
+
