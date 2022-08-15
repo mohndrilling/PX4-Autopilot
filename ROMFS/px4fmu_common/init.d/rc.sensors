@@ -156,6 +156,12 @@ then
 	ms5525dso start -X
 fi
 
+# TE MS5837-30BA differential pressure sensor external I2C
+if param compare -s SENS_EN_MS5837 1
+then
+	ms5837 start -X
+fi
+
 # SHT3x temperature and hygrometer sensor, external I2C
 if param compare -s SENS_EN_SHT3X 1
 then

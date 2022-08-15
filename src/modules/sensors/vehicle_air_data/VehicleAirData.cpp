@@ -297,27 +297,41 @@ void VehicleAirData::Run()
 
 float VehicleAirData::PressureToAltitude(float pressure_pa, float temperature) const
 {
-	// calculate altitude using the hypsometric equation
-	static constexpr float T1 = 15.f - CONSTANTS_ABSOLUTE_NULL_CELSIUS; // temperature at base height in Kelvin
-	static constexpr float a = -6.5f / 1000.f; // temperature gradient in degrees per metre
+    float altitude = 0.0f;
+    if (_param_in_air.get()) {
+        // calculate altitude using the hypsometric equation
+        static constexpr float T1 = 15.f - CONSTANTS_ABSOLUTE_NULL_CELSIUS; // temperature at base height in Kelvin
+        static constexpr float a = -6.5f / 1000.f; // temperature gradient in degrees per metre
 
-	// current pressure at MSL in kPa (QNH in hPa)
-	const float p1 = _param_sens_baro_qnh.get() * 0.1f;
+        // current pressure at MSL in kPa (QNH in hPa)
+        const float p1 = _param_sens_baro_qnh.get() * 0.1f;
 
-	// measured pressure in kPa
-	const float p = pressure_pa * 0.001f;
+        // measured pressure in kPa
+        const float p = pressure_pa * 0.001f;
 
-	/*
-	 * Solve:
-	 *
-	 *     /        -(aR / g)     \
-	 *    | (p / p1)          . T1 | - T1
-	 *     \                      /
-	 * h = -------------------------------  + h1
-	 *                   a
-	 */
-	float altitude = (((powf((p / p1), (-(a * CONSTANTS_AIR_GAS_CONST) / CONSTANTS_ONE_G))) * T1) - T1) / a;
+        /*
+         * Solve:
+         *
+         *     /        -(aR / g)     \
+         *    | (p / p1)          . T1 | - T1
+         *     \                      /
+         * h = -------------------------------  + h1
+         *                   a
+         */
+        altitude = (((powf((p / p1), (-(a * CONSTANTS_AIR_GAS_CONST) / CONSTANTS_ONE_G))) * T1) - T1) / a;
+    } else {
+        // pressure at sea level (depends on the weather: extreme min = 870 hPa, average: 1013.25, extreme max = 1084.8 hPa)
+        // can be set by changing SENS_BARO_QNH px4 param
+        const float p1 = _param_sens_baro_qnh.get();
 
+        // measured pressure in hPa
+        const float p = pressure_pa * 0.01f;
+
+        // underwater the pressure increases by 1000 hPa every 10 m
+        // height in m:
+
+        altitude = (p - p1) * 0.01f;
+    }
 	return altitude;
 }
 
