@@ -34,6 +34,8 @@ int mohntech_example_app_main(int argc, char *argv[])
 {
 	PX4_INFO("mohntech_example_app has been started!");
 
+    float pwm = atof(argv[1]);
+
 	/* advertise to actuator_outputs topic */
 	struct actuator_motors_s act_mot;
 	struct actuator_servos_s act_ser;
@@ -42,11 +44,10 @@ int mohntech_example_app_main(int argc, char *argv[])
 	orb_advert_t mot_pub = orb_advertise(ORB_ID(actuator_motors), &act_mot);
 	orb_advert_t ser_pub = orb_advertise(ORB_ID(actuator_servos), &act_ser);
 
-
     PX4_INFO("Testing all motors and servos");
     for (int j = 0; j < 8; j++){
-        act_mot.control[j] = 1900;
-        act_ser.control[j] = 1900;
+        act_mot.control[j] = pwm;
+        act_ser.control[j] = pwm;
     }
     orb_publish(ORB_ID(actuator_motors), mot_pub, &act_mot);
     orb_publish(ORB_ID(actuator_servos), ser_pub, &act_ser);
