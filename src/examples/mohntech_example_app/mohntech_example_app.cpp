@@ -25,8 +25,8 @@
 
 // Include uORB and the required topics for this app
 #include <uORB/uORB.h>
-#include <uORB/topics/vehicle_acceleration.h>
-#include <uORB/topics/actuator_controls.h>
+#include <uORB/topics/actuator_motors.h>
+#include <uORB/topics/actuator_servos.h>
 
 extern "C" __EXPORT int mohntech_example_app_main(int argc, char *argv[]);
 
@@ -34,34 +34,23 @@ int mohntech_example_app_main(int argc, char *argv[])
 {
 	PX4_INFO("mohntech_example_app has been started!");
 
-	/* subscribe to vehicle_acceleration topic */
-	int sensor_sub_fd = orb_subscribe(ORB_ID(vehicle_acceleration));
-	/* limit the update rate to 5 Hz */
-	orb_set_interval(sensor_sub_fd, 200);
-
 	/* advertise to actuator_outputs topic */
-	struct actuator_controls_s act;
-	memset(&act, 0, sizeof(act));
-	orb_advert_t act_pub = orb_advertise(ORB_ID(actuator_controls_0), &act);
+	struct actuator_motors_s act_mot;
+	struct actuator_servos_s act_ser;
+	memset(&act_mot, 0, sizeof(act_mot));
+	memset(&act_ser, 0, sizeof(act_ser));
+	orb_advert_t mot_pub = orb_advertise(ORB_ID(actuator_motors), &act_mot);
+	orb_advert_t ser_pub = orb_advertise(ORB_ID(actuator_servos), &act_ser);
 
-    for (int i = 0; i < 8; i++) {
-        PX4_INFO("Testing motor %i", i);
-        act.control[0] = 0.0f;
-        act.control[1] = 0.0f;
-        act.control[2] = 0.0f;
-        act.control[3] = 0.0f;
-        act.control[4] = 0.0f;
-        act.control[5] = 0.0f;
-        act.control[6] = 0.0f;
-        act.control[7] = 0.0f;
-        for (float j = -1.0f; j < 1.0f; j+=0.1f) {
-            act.control[i] = j;
-            orb_publish(ORB_ID(actuator_controls_0), act_pub, &act);
-            px4_usleep(150000);
-        }
-        act.control[i] = 0.0f;
-        orb_publish(ORB_ID(actuator_controls_0), act_pub, &act);
+
+    PX4_INFO("Testing all motors and servos");
+    for (int j = 0; j < 8; j++){
+        act_mot.control[j] = 1900;
+        act_ser.control[j] = 1900;
     }
+    orb_publish(ORB_ID(actuator_motors), mot_pub, &act_mot);
+    orb_publish(ORB_ID(actuator_servos), ser_pub, &act_ser);
+
 	PX4_INFO("Exiting mohntech_example_app!");
 	return 0;
 }
