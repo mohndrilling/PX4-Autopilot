@@ -49,6 +49,9 @@ int mohntech_example_app_main(int argc, char *argv[])
         act_mot.control[j] = pwm;
         act_ser.control[j] = pwm;
     }
+
+    act_mot.reversible_flags = 255;
+
     orb_publish(ORB_ID(actuator_motors), mot_pub, &act_mot);
     orb_publish(ORB_ID(actuator_servos), ser_pub, &act_ser);
 

@@ -10,24 +10,228 @@ set VEHICLE_TYPE auv
 # MAV_TYPE_SUBMARINE 12
 param set-default MAV_TYPE 12
 
-param set-default PWM_MAIN_MAX 1950
-param set-default PWM_MAIN_MIN 1050
-# VERY IMPORTANT another value than 900 for PWM_MAIN_DISARM leads to all thrusters spinning at full speed at disarm
-param set-default PWM_MAIN_DISARM 900
+param set-default SYS_CTRL_ALLOC 1
 
-#
-# PWM Hz - 50 Hz is the normal rate in RC cars, boats etc,
-# higher rates may damage analog servos.
-#
-set PWM_MAIN_RATE 50
+# This is the aux pass mixer that isn't used anymore as we directly publish to actuator_servos
 set MIXER pass
 
-# Enable servo output on pins 1-4
-set PWM_OUT 1234
+param set-default PWM_MAIN_DIS1 900
+param set-default PWM_MAIN_DIS2 900
+param set-default PWM_MAIN_DIS3 900
+param set-default PWM_MAIN_DIS4 900
+param set-default PWM_MAIN_DIS5 900
+param set-default PWM_MAIN_DIS6 900
+param set-default PWM_MAIN_DIS7 900
+param set-default PWM_MAIN_DIS8 900
+param set-default PWM_MAIN_DISARM 900
 
-#
-# This is the gimbal pass mixer.
-#
+param set-default PWM_MAIN_FAIL1 900
+param set-default PWM_MAIN_FAIL2 900
+param set-default PWM_MAIN_FAIL3 900
+param set-default PWM_MAIN_FAIL4 900
+param set-default PWM_MAIN_FAIL5 900
+param set-default PWM_MAIN_FAIL6 900
+param set-default PWM_MAIN_FAIL7 900
+param set-default PWM_MAIN_FAIL8 900
+
+param set-default PWM_MAIN_MAX 1900
+param set-default PWM_MAIN_MAX1 1900
+param set-default PWM_MAIN_MAX2 1900
+param set-default PWM_MAIN_MAX3 1900
+param set-default PWM_MAIN_MAX4 1900
+param set-default PWM_MAIN_MAX5 1900
+param set-default PWM_MAIN_MAX6 1900
+param set-default PWM_MAIN_MAX7 1900
+param set-default PWM_MAIN_MAX8 1900
+
+param set-default PWM_MAIN_MIN 1100
+param set-default PWM_MAIN_MIN1 1100
+param set-default PWM_MAIN_MIN2 1100
+param set-default PWM_MAIN_MIN3 1100
+param set-default PWM_MAIN_MIN4 1100
+param set-default PWM_MAIN_MIN5 1100
+param set-default PWM_MAIN_MIN6 1100
+param set-default PWM_MAIN_MIN7 1100
+param set-default PWM_MAIN_MIN8 1100
+
+# not the actual PWM pulse length but just a rate that is dependent on the ESC; our ESCs and most others use rate 50
+param set-default PWM_MAIN_RATE 50
+
+# we don't want to reverse the outputs so we set these to 0
+param set-default PWM_MAIN_REV1 0
+param set-default PWM_MAIN_REV2 0
+param set-default PWM_MAIN_REV3 0
+param set-default PWM_MAIN_REV4 0
+param set-default PWM_MAIN_REV5 0
+param set-default PWM_MAIN_REV6 0
+param set-default PWM_MAIN_REV7 0
+param set-default PWM_MAIN_REV8 0
+
+# offset to normalized input (actuator_motors) could be useful in the future when we see that the motors are too different
+param set-default PWM_MAIN_TRIM1 0.0000
+param set-default PWM_MAIN_TRIM2 0.0000
+param set-default PWM_MAIN_TRIM3 0.0000
+param set-default PWM_MAIN_TRIM4 0.0000
+param set-default PWM_MAIN_TRIM5 0.0000
+param set-default PWM_MAIN_TRIM6 0.0000
+param set-default PWM_MAIN_TRIM7 0.0000
+param set-default PWM_MAIN_TRIM8 0.0000
+
+param set-default PWM_MAIN_FUNC1 0
+param set-default PWM_MAIN_FUNC2 0
+param set-default PWM_MAIN_FUNC3 0
+param set-default PWM_MAIN_FUNC4 0
+param set-default PWM_MAIN_FUNC5 0
+param set-default PWM_MAIN_FUNC6 0
+param set-default PWM_MAIN_FUNC7 0
+param set-default PWM_MAIN_FUNC8 0
+
+# This is the aux pass mixer that isn't used anymore as we directly publish to actuator_servos
 set MIXER_AUX pass
-set PWM_AUX_OUT 1234
-set PWM_AUX_RATE 50
+
+# LED start to shine at 1200
+param set-default PWM_AUX_DISARM 900
+param set-default PWM_AUX_DIS1 900
+param set-default PWM_AUX_DIS2 900
+param set-default PWM_AUX_DIS3 900
+param set-default PWM_AUX_DIS4 900
+param set-default PWM_AUX_DIS5 900
+param set-default PWM_AUX_DIS6 900
+param set-default PWM_AUX_DIS7 900
+param set-default PWM_AUX_DIS8 900
+
+param set-default PWM_AUX_FAIL1 900
+param set-default PWM_AUX_FAIL2 900
+param set-default PWM_AUX_FAIL3 900
+param set-default PWM_AUX_FAIL4 900
+param set-default PWM_AUX_FAIL5 900
+param set-default PWM_AUX_FAIL6 900
+param set-default PWM_AUX_FAIL7 900
+param set-default PWM_AUX_FAIL8 900
+
+param set-default PWM_AUX_MAX 1900
+param set-default PWM_AUX_MAX1 1900
+param set-default PWM_AUX_MAX2 1900
+param set-default PWM_AUX_MAX3 1900
+param set-default PWM_AUX_MAX4 1900
+param set-default PWM_AUX_MAX5 1900
+param set-default PWM_AUX_MAX6 1900
+param set-default PWM_AUX_MAX7 1900
+param set-default PWM_AUX_MAX8 1900
+
+param set-default PWM_AUX_MIN 1100
+param set-default PWM_AUX_MIN1 1100
+param set-default PWM_AUX_MIN2 1100
+param set-default PWM_AUX_MIN3 1100
+param set-default PWM_AUX_MIN4 1100
+param set-default PWM_AUX_MIN5 1100
+param set-default PWM_AUX_MIN6 1100
+param set-default PWM_AUX_MIN7 1100
+param set-default PWM_AUX_MIN8 1100
+
+# activate channels 1, 2, 3, 4, 5, 6, 7, 8
+# if you want to deactivate some channels use 1234 for 1, 2, 3, 4 or 1458 for 1, 4, 5, 8
+param set-default PWM_AUX_OUT 12345678
+set PWM_AUX_OUT 12345678
+
+# not the actual PWM pulse length but just a rate that is dependent on the ESC; our ESCs and most others use rate 50
+param set-default PWM_AUX_RATE 50
+
+# we don't want to reverse the outputs so we set these to 0
+param set-default PWM_AUX_REV1 0
+param set-default PWM_AUX_REV2 0
+param set-default PWM_AUX_REV3 0
+param set-default PWM_AUX_REV4 0
+param set-default PWM_AUX_REV5 0
+param set-default PWM_AUX_REV6 0
+param set-default PWM_AUX_REV7 0
+param set-default PWM_AUX_REV8 0
+
+# offset to normalized input (actuator_servos) could be useful in the future when we see that the actuators are too different
+param set-default PWM_AUX_TRIM1 0.0000
+param set-default PWM_AUX_TRIM2 0.0000
+param set-default PWM_AUX_TRIM3 0.0000
+param set-default PWM_AUX_TRIM4 0.0000
+param set-default PWM_AUX_TRIM5 0.0000
+param set-default PWM_AUX_TRIM6 0.0000
+param set-default PWM_AUX_TRIM7 0.0000
+param set-default PWM_AUX_TRIM8 0.0000
+
+param set-default PWM_AUX_FUNC1 201
+param set-default PWM_AUX_FUNC2 202
+param set-default PWM_AUX_FUNC3 203
+param set-default PWM_AUX_FUNC4 204
+param set-default PWM_AUX_FUNC5 205
+param set-default PWM_AUX_FUNC6 206
+param set-default PWM_AUX_FUNC7 207
+param set-default PWM_AUX_FUNC8 208
+
+# UAVCAN
+
+param set-default UAVCAN_EC_DIS1 4096
+param set-default UAVCAN_EC_DIS2 4096
+param set-default UAVCAN_EC_DIS3 4096
+param set-default UAVCAN_EC_DIS4 4096
+param set-default UAVCAN_EC_DIS5 4096
+param set-default UAVCAN_EC_DIS6 4096
+param set-default UAVCAN_EC_DIS7 4096
+param set-default UAVCAN_EC_DIS8 4096
+
+param set-default UAVCAN_EC_FAIL1 4096
+param set-default UAVCAN_EC_FAIL2 4096
+param set-default UAVCAN_EC_FAIL3 4096
+param set-default UAVCAN_EC_FAIL4 4096
+param set-default UAVCAN_EC_FAIL5 4096
+param set-default UAVCAN_EC_FAIL6 4096
+param set-default UAVCAN_EC_FAIL7 4096
+param set-default UAVCAN_EC_FAIL8 4096
+
+param set-default UAVCAN_EC_FUNC1 101
+param set-default UAVCAN_EC_FUNC2 102
+param set-default UAVCAN_EC_FUNC3 103
+param set-default UAVCAN_EC_FUNC4 104
+param set-default UAVCAN_EC_FUNC5 105
+param set-default UAVCAN_EC_FUNC6 106
+param set-default UAVCAN_EC_FUNC7 107
+param set-default UAVCAN_EC_FUNC8 108
+
+param set-default UAVCAN_EC_MAX1 8191
+param set-default UAVCAN_EC_MAX2 8191
+param set-default UAVCAN_EC_MAX3 8191
+param set-default UAVCAN_EC_MAX4 8191
+param set-default UAVCAN_EC_MAX5 8191
+param set-default UAVCAN_EC_MAX6 8191
+param set-default UAVCAN_EC_MAX7 8191
+param set-default UAVCAN_EC_MAX8 8191
+
+param set-default UAVCAN_EC_MIN1 0
+param set-default UAVCAN_EC_MIN2 0
+param set-default UAVCAN_EC_MIN3 0
+param set-default UAVCAN_EC_MIN4 0
+param set-default UAVCAN_EC_MIN5 0
+param set-default UAVCAN_EC_MIN6 0
+param set-default UAVCAN_EC_MIN7 0
+param set-default UAVCAN_EC_MIN8 0
+
+# allow all motors to spin backwards as well as forwards
+param set-default UAVCAN_EC_REV 0
+
+param set-default UAVCAN_SV_FAIL1 -1
+param set-default UAVCAN_SV_FAIL2 -1
+param set-default UAVCAN_SV_FAIL3 -1
+param set-default UAVCAN_SV_FAIL4 -1
+param set-default UAVCAN_SV_FAIL5 -1
+param set-default UAVCAN_SV_FAIL6 -1
+param set-default UAVCAN_SV_FAIL7 -1
+param set-default UAVCAN_SV_FAIL8 -1
+
+param set-default UAVCAN_SV_FUNC1 0
+param set-default UAVCAN_SV_FUNC2 0
+param set-default UAVCAN_SV_FUNC3 0
+param set-default UAVCAN_SV_FUNC4 0
+param set-default UAVCAN_SV_FUNC5 0
+param set-default UAVCAN_SV_FUNC6 0
+param set-default UAVCAN_SV_FUNC7 0
+param set-default UAVCAN_SV_FUNC8 0
+
+param set-default UAVCAN_SV_REV 0

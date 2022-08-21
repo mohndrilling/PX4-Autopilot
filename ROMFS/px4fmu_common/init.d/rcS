@@ -325,6 +325,7 @@ else
 		# Start core UAVCAN module.
 		if uavcan start
 		then
+		  pwm_out start
 			if param greater UAVCAN_ENABLE 2
 			then
 				set OUTPUT_MODE uavcan_esc

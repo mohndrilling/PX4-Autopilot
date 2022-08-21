@@ -574,8 +574,6 @@ UavcanNode::init(uavcan::NodeID node_id, UAVCAN_DRIVER::BusEvent &bus_events)
 		return -EINVAL;
 	}
 
-	_mixing_interface_esc.mixingOutput().setAllDisarmedValues(UavcanEscController::DISARMED_OUTPUT_VALUE);
-
 	if (!_mixing_interface_esc.mixingOutput().useDynamicMixing()) {
 		// these are configurable with dynamic mixing
 		_mixing_interface_esc.mixingOutput().setAllMinValues(0); // Can be changed to 1 later, according to UAVCAN_ESC_IDLT

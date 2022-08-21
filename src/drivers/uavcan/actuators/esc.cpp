@@ -119,6 +119,7 @@ UavcanEscController::update_outputs(bool stop_motors, uint16_t outputs[MAX_ACTUA
 	 * Publish the command message to the bus
 	 * Note that for a quadrotor it takes one CAN frame
 	 */
+	 /*
     PX4_INFO(
         "output: %i, %i, %i, %i, %i, %i, %i, %i",
         msg.cmd[0],
@@ -130,6 +131,7 @@ UavcanEscController::update_outputs(bool stop_motors, uint16_t outputs[MAX_ACTUA
         msg.cmd[6],
         msg.cmd[7]
     );
+    */
 	_uavcan_pub_raw_cmd.broadcast(msg);
 }
 

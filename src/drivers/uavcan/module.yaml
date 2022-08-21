@@ -12,6 +12,7 @@ actuator_output:
       group_label: 'ESCs'
       channel_label: 'ESC'
       standard_params:
+        disarmed: { min: 0, max: 8191, default: 4096 }
         min: { min: 0, max: 8191, default: 1 }
         max: { min: 0, max: 8191, default: 8191 }
         failsafe: { min: 0, max: 8191 }
