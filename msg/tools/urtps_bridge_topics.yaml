@@ -92,3 +92,7 @@ rtps:
   # new topics
   - msg:     actuator_controls
     receive: true
+  - msg:     actuator_servos
+    receive: true
+  - msg:     actuator_motors
+    receive: true
