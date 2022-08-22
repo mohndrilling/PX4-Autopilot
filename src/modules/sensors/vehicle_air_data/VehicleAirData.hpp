@@ -128,8 +128,14 @@ private:
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::SENS_BARO_QNH>) _param_sens_baro_qnh,
 		(ParamFloat<px4::params::SENS_BARO_RATE>) _param_sens_baro_rate,
-		(ParamInt<px4::params::BARO_MEDIUM>) _param_baro_medium,
+		(ParamInt<px4::params::SENS_BARO_MEDIUM>) _param_sens_baro_medium,
 		(ParamInt<px4::params::SENS_EN_MS5837>) _param_sens_en_MS5837
 	)
 };
 }; // namespace sensors
+
+enum Medium {
+   Air,
+   FreshWater,
+   SaltWater
+};
