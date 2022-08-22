@@ -331,7 +331,7 @@ int MS5837::_collect()
 		_last_temperature = TEMP / 100.0f;
 
 	} else {
-		/* pressure calculation, result in hPa */
+		/* pressure calculation, result in Pa */
 		int32_t P = ((((raw * _SENS) >> 21) - _OFF) >> 13) * 10;
 
 		// publish
