@@ -17,3 +17,6 @@ ekf2 start &
 
 # start micrortps_client to enable ROS2 communication
 micrortps_client start
+
+# don't use the internal pressure sensor
+ms5611 stop
