@@ -7,6 +7,9 @@
 
 set VEHICLE_TYPE auv
 
+# salt water
+param set-default SENS_BARO_MEDIUM 2
+
 # MAV_TYPE_SUBMARINE 12
 param set-default MAV_TYPE 12
 
@@ -167,6 +170,7 @@ param set-default PWM_AUX_FUNC7 207
 param set-default PWM_AUX_FUNC8 208
 
 # UAVCAN
+param set-default UAVCAN_NODE_ID 9
 
 param set-default UAVCAN_EC_DIS1 4096
 param set-default UAVCAN_EC_DIS2 4096
