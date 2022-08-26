@@ -100,3 +100,5 @@ rtps:
     receive: true
   - msg:     sensor_baro
     send:    true
+  - msg:     vehicle_air_data
+    send:    true
