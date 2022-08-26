@@ -96,3 +96,7 @@ rtps:
     receive: true
   - msg:     actuator_motors
     receive: true
+  - msg:     sensor_gps
+    receive: true
+  - msg:     sensor_baro
+    send:    true
