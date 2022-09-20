@@ -357,7 +357,7 @@ float VehicleAirData::PressureToAltitude(float pressure_pa, float temperature) c
         // g/gravity i.e. CONSTANTS_ONE_G = 9.80665 m/s2
         // we don't adjust g for altitude or latitude
 
-        altitude = (p0 - p1) / (rho * CONSTANTS_ONE_G);
+        altitude = - (p0 - p1) / (rho * CONSTANTS_ONE_G);
     }
 	return altitude;
 }
