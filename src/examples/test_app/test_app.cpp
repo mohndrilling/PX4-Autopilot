@@ -1,43 +1,6 @@
-/****************************************************************************
- *
- *   Copyright (C) 2014 PX4 Development Team. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- * 3. Neither the name PX4 nor the names of its contributors may be
- *    used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
- * OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
- * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- ****************************************************************************/
 
-/**
- * @file esc.cpp
- *
- * @author Pavel Kirienko <pavel.kirienko@gmail.com>
- */
 
-#include "esc.hpp"
+#include "test_app.hpp"
 #include <systemlib/err.h>
 #include <drivers/drv_hrt.h>
 
@@ -119,19 +82,19 @@ UavcanEscController::update_outputs(bool stop_motors, uint16_t outputs[MAX_ACTUA
 	 * Publish the command message to the bus
 	 * Note that for a quadrotor it takes one CAN frame
 	 */
-
-    // PX4_INFO(
-    //     "output: %i, %i, %i, %i, %i, %i, %i, %i",
-    //     msg.cmd[0],
-    //     msg.cmd[1],
-    //     msg.cmd[2],
-    //     msg.cmd[3],
-    //     msg.cmd[4],
-    //     msg.cmd[5],
-    //     msg.cmd[6],
-    //     msg.cmd[7]
-    // );
-    
+	 /*
+    PX4_INFO(
+        "output: %i, %i, %i, %i, %i, %i, %i, %i",
+        msg.cmd[0],
+        msg.cmd[1],
+        msg.cmd[2],
+        msg.cmd[3],
+        msg.cmd[4],
+        msg.cmd[5],
+        msg.cmd[6],
+        msg.cmd[7]
+    );
+    */
 	_uavcan_pub_raw_cmd.broadcast(msg);
 }
 
@@ -147,35 +110,34 @@ UavcanEscController::esc_status_sub_cb(const uavcan::ReceivedDataStructure<uavca
 	if (msg.esc_index < esc_status_s::CONNECTED_ESC_MAX) {
 		auto &ref = _esc_status.esc[msg.esc_index];
 
-		ref.timestamp       = hrt_absolute_time();
-		ref.esc_address = msg.getSrcNodeID().get();
-		ref.esc_voltage     = msg.voltage;
-		ref.esc_current     = msg.current;
-		ref.esc_temperature = msg.temperature;
-		ref.esc_rpm         = msg.rpm;
-		ref.esc_errorcount  = msg.error_count;
+		// ref.timestamp       = hrt_absolute_time();
+		// ref.esc_address = msg.getSrcNodeID().get();
+		// ref.esc_voltage     = msg.voltage;
+		// ref.esc_current     = msg.current;
+		// ref.esc_temperature = msg.temperature;
+		// ref.esc_rpm         = msg.rpm;
+		// ref.esc_errorcount  = msg.error_count;
 
-		_esc_status.esc_count = _rotor_count;
-		_esc_status.counter += 1;
-		_esc_status.esc_connectiontype = esc_status_s::ESC_CONNECTION_TYPE_CAN;
-		_esc_status.esc_online_flags = check_escs_status();
-		_esc_status.esc_armed_flags = (1 << _rotor_count) - 1;
-		_esc_status.timestamp = hrt_absolute_time();
-		_esc_status_pub.publish(_esc_status);
-
-		// printf(
-		//     "timestamp %f, esc_address %i, esc_index %i, esc_voltage2 %f, esc_current %f, esc_temperature %f, esc_rpm %i, power_rating_pct %i, esc_errorcount %i\n",
-		//     (double) ref.timestamp,
-		//     (int) ref.esc_address,
-		//     (int) msg.esc_index,
-		// 	// (double) ref.esc_voltage,
-        //     (double)  _esc_status.esc[msg.esc_index].esc_voltage,
-		//     (double) ref.esc_current,
-		//     (double) ref.esc_temperature,
-		//     (int) ref.esc_rpm,
-		//     (int) msg.power_rating_pct,
-		//     (int) ref.esc_errorcount
-		// );
+		// _esc_status.esc_count = _rotor_count;
+		// _esc_status.counter += 1;
+		// _esc_status.esc_connectiontype = esc_status_s::ESC_CONNECTION_TYPE_CAN;
+		// _esc_status.esc_online_flags = check_escs_status();
+		// _esc_status.esc_armed_flags = (1 << _rotor_count) - 1;
+		// _esc_status.timestamp = hrt_absolute_time();
+		// _esc_status_pub.publish(_esc_status);
+		
+		printf(
+		    "timestamp %f, esc_address %i, esc_index %i, esc_voltage %f, esc_current %f, esc_temperature %f, esc_rpm %i, power_rating_pct %i, esc_errorcount %i\n",
+		    (double) ref.timestamp,
+		    (int) ref.esc_address,
+		    (int) msg.esc_index,
+		    (double) ref.esc_voltage,
+		    (double) ref.esc_current,
+		    (double) ref.esc_temperature,
+		    (int) ref.esc_rpm,
+		    (int) msg.power_rating_pct,
+		    (int) ref.esc_errorcount
+		);
 		
 		/*
 		printf(

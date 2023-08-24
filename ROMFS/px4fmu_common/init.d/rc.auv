@@ -239,3 +239,10 @@ param set-default UAVCAN_SV_FUNC7 0
 param set-default UAVCAN_SV_FUNC8 0
 
 param set-default UAVCAN_SV_REV 0
+
+# uGPS
+param set-default EKF2_REQ_NSATS 3
+param set-default EKF2_REQ_SACC 100.0
+param set-default EKF2_GPS_POS_X -0.11
+param set-default EKF2_GPS_POS_Y 0.0
+param set-default EKF2_GPS_POS_Z -0.25

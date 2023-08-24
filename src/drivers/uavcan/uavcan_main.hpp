@@ -47,6 +47,7 @@
 #include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
 
 #include "actuators/esc.hpp"
+#include "actuators/esc_rpm.hpp"
 #include "actuators/hardpoint.hpp"
 #include "actuators/servo.hpp"
 #include "allocator.hpp"
@@ -228,6 +229,7 @@ private:
 	pthread_mutex_t			_node_mutex;
 
 	UavcanBeepController		_beep_controller;
+	UavcanEscRPM 				_esc_rpm_controller;
 	UavcanEscController		_esc_controller;
 	UavcanServoController		_servo_controller;
 	UavcanMixingInterfaceESC 	_mixing_interface_esc{_node_mutex, _esc_controller};

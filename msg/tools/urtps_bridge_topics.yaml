@@ -102,3 +102,9 @@ rtps:
     send:    true
   - msg:     vehicle_air_data
     send:    true
+  - msg:     esc_report
+    send:    true
+  - msg:     esc_status
+    send:    true
+  - msg:      esc_rpm
+    send:    true

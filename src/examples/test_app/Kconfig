@@ -1,0 +1,5 @@
+menuconfig EXAMPLES_TEST_APP
+    bool "PX4_Simple_app"
+    default n
+    ---help---
+        Enable PX4 simple app

@@ -149,6 +149,7 @@ px4_add_module(
 
 		# Actuators
 		actuators/esc.cpp
+		actuators/esc_rpm.cpp
 		actuators/hardpoint.cpp
 		actuators/servo.cpp
 

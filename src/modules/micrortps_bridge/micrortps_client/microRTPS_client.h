@@ -91,7 +91,7 @@ struct options {
 	int loops = LOOPS;
 	bool sw_flow_control = false;
 	bool hw_flow_control = false;
-	bool verbose_debug = false;
+	bool verbose_debug = false; 
 };
 
 extern struct options _options;

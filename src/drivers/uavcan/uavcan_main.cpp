@@ -82,6 +82,7 @@ UavcanNode::UavcanNode(uavcan::ICanDriver &can_driver, uavcan::ISystemClock &sys
 	ModuleParams(nullptr),
 	_node(can_driver, system_clock, _pool_allocator),
 	_beep_controller(_node),
+	_esc_rpm_controller(_node),
 	_esc_controller(_node),
 	_servo_controller(_node),
 	_hardpoint_controller(_node),
@@ -514,13 +515,19 @@ UavcanNode::init(uavcan::NodeID node_id, UAVCAN_DRIVER::BusEvent &bus_events)
 		return ret;
 	}
 
+	ret = _esc_rpm_controller.init();
+
+	if (ret < 0) {
+		return ret;
+	}
+
 	// Actuators
 	ret = _esc_controller.init();
 
 	if (ret < 0) {
 		return ret;
 	}
-
+	
 	ret = _hardpoint_controller.init();
 
 	if (ret < 0) {
