@@ -106,5 +106,5 @@ rtps:
     send:    true
   - msg:     esc_status
     send:    true
-  - msg:      esc_rpm
+  - msg:     esc_rpm
     send:    true
