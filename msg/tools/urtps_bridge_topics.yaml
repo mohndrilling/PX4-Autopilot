@@ -108,3 +108,5 @@ rtps:
     send:    true
   - msg:     esc_rpm
     send:    true
+  - msg:     sensor_mag
+    send:    true
